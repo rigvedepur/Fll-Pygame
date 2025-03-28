@@ -17,6 +17,8 @@ moving_down = False
 moving_up = False
 clock = pygame.time.Clock()
 
+player_rect = pygame.Rect(player_pos[0], player_pos[1], player.get_width(), player.get_height())
+
 class Ball:
         def __init__(self, x, y, radius, color):
             self.x = x
@@ -26,6 +28,14 @@ class Ball:
         
         def draw(self, screen):
             pygame.draw.circle(screen, self.color, (self.x, self.y), self.radius)
+        
+        def createRectForBall(self):
+            ball_pos = list((self.x, self.y))
+            ball_rect = pygame.Rect(ball_pos[0], ball_pos[1], 50, 50)
+            return ball_rect
+
+            
+
 
 
 balls = []
@@ -67,6 +77,9 @@ while running:
     if moving_up == True:
         player_pos[1] -= 10
 
+    player_rect.x = player_pos[0]
+    player_rect.y = player_pos[1]
+
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -91,6 +104,12 @@ while running:
                 moving_down = False
         if event.type == TIMEREVENT:
             ball = create_random_ball()
+            
+        ball_rect = ball.createRectForBall()
+        
+        if player_rect.colliderect(ball_rect):
+            print("Ball has collided with player")
+            
 
 
     # for ball in balls:
