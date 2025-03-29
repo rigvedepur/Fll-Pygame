@@ -118,23 +118,10 @@ while running:
             if event.type == ball.TIMEREVENT:
                 balls.remove(ball)
 
-
-
-        for ball in balls:
             if player_rect.colliderect(ball.createRectForBall()):
                 print("Collision detected")
                 balls.remove(ball)
 
-
-
-
-        
-
-            
-
-
-    # for ball in balls:
-    #     ball.draw(screen)
         
 
     # screen.blit(player, (300, 400))
