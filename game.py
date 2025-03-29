@@ -58,10 +58,15 @@ def create_random_ball():
 #     balls.append(ball)
     
 TIMEREVENT = pygame.USEREVENT + 1
-pygame.time.set_timer(TIMEREVENT, 2000)  
+pygame.time.set_timer(TIMEREVENT, 2000)
+
+TIMEREVENT2 = pygame.USEREVENT + 1
+pygame.time.set_timer(TIMEREVENT2, 2000)  
 
 
 ball = create_random_ball()
+collidedWithBall = False
+ball2 = create_random_ball()
 
 running = True
 while running:
@@ -104,11 +109,27 @@ while running:
                 moving_down = False
         if event.type == TIMEREVENT:
             ball = create_random_ball()
-            
         ball_rect = ball.createRectForBall()
         
         if player_rect.colliderect(ball_rect):
             print("Ball has collided with player")
+            collidedWithBall = True
+            TIMEREVENT2 = pygame.USEREVENT + 1
+            pygame.time.set_timer(TIMEREVENT2, 2000)
+        if collidedWithBall:
+            ball2.draw(screen)
+            collidedWithBall = False
+        if event.type == TIMEREVENT2:
+            ball2 = create_random_ball()
+            balls.append(ball2)
+            try:
+                balls.pop()
+            except:
+                pass
+            print(str(balls))
+
+        
+
             
 
 
