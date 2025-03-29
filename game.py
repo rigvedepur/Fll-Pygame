@@ -16,8 +16,11 @@ moving_right = False
 moving_down = False
 moving_up = False
 clock = pygame.time.Clock()
+ballDestroyed = False
 
 player_rect = pygame.Rect(player_pos[0], player_pos[1], player.get_width(), player.get_height())
+
+ball_timer_index = 2
 
 class Ball:
         def __init__(self, x, y, radius, color):
@@ -25,7 +28,8 @@ class Ball:
             self.y = y
             self.radius = radius
             self.color = color
-        
+
+
         def draw(self, screen):
             pygame.draw.circle(screen, self.color, (self.x, self.y), self.radius)
         
@@ -34,45 +38,43 @@ class Ball:
             ball_rect = pygame.Rect(ball_pos[0], ball_pos[1], 50, 50)
             return ball_rect
 
-            
+        def create_timer(self, ball_timer_index):
 
+            self.TIMEREVENT = pygame.USEREVENT + ball_timer_index
+            pygame.time.set_timer(self.TIMEREVENT, 6000)
+
+
+            
+TIMEREVENT = pygame.USEREVENT + 1
+pygame.time.set_timer(TIMEREVENT, 500)
 
 
 balls = []
 
 def create_random_ball():
+    global ball_timer_index
     x = random.randint(0, 1200)
     y = random.randint(0, 800)
     radius = 25
     color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
     ball = Ball(x, y, radius, color)
+    ball.create_timer(ball_timer_index)
+    ball_timer_index += 1
+    balls.append(ball)
     return ball
-
-# num_balls = 10
-# for _ in range(num_balls):
-#     x = random.randint(0, 1200)
-#     y = random.randint(0, 800)
-#     radius = 25
-#     color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
-#     ball = Ball(x, y, radius, color)
-#     balls.append(ball)
-    
-TIMEREVENT = pygame.USEREVENT + 1
-pygame.time.set_timer(TIMEREVENT, 2000)
-
-TIMEREVENT2 = pygame.USEREVENT + 1
-pygame.time.set_timer(TIMEREVENT2, 2000)  
 
 
 ball = create_random_ball()
-collidedWithBall = False
-ball2 = create_random_ball()
 
 running = True
 while running:
     screen.fill((0, 0, 0))
     screen.blit(player, player_pos)
-    ball.draw(screen)
+
+    if len(balls) != 0:
+        for ball in balls:
+            ball.draw(screen)
+
     if moving_left == True:
         player_pos[0] -= 10
     if moving_right == True:
@@ -107,26 +109,24 @@ while running:
                 moving_up = False
             if event.key == pygame.K_DOWN:
                 moving_down = False
+
         if event.type == TIMEREVENT:
-            ball = create_random_ball()
-        ball_rect = ball.createRectForBall()
-        
-        if player_rect.colliderect(ball_rect):
-            print("Ball has collided with player")
-            collidedWithBall = True
-            TIMEREVENT2 = pygame.USEREVENT + 1
-            pygame.time.set_timer(TIMEREVENT2, 2000)
-        if collidedWithBall:
-            ball2.draw(screen)
-            collidedWithBall = False
-        if event.type == TIMEREVENT2:
-            ball2 = create_random_ball()
-            balls.append(ball2)
-            try:
-                balls.pop()
-            except:
-                pass
-            print(str(balls))
+            create_random_ball()
+            print(f"Number of balls: {len(balls)}")
+
+        for ball in balls:
+            if event.type == ball.TIMEREVENT:
+                balls.remove(ball)
+
+
+
+        for ball in balls:
+            if player_rect.colliderect(ball.createRectForBall()):
+                print("Collision detected")
+                balls.remove(ball)
+
+
+
 
         
 
