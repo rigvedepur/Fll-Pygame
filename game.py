@@ -3,12 +3,14 @@ import random
 import time
  
 pygame.init()
+pygame.font.init()
 
+font = pygame.font.Font("pixel.ttf", 45)
 
 scale = 2.5
 
 screen = pygame.display.set_mode((1200, 800))
-player = pygame.image.load('example_kurma_robot.jpg')
+player = pygame.image.load('images/example_kurma_robot.jpg')
 player = pygame.transform.scale(player, (612/scale, 438/scale))
 player.set_colorkey((255, 255, 255))
 player_pos = [0, 300]
@@ -18,6 +20,14 @@ moving_down = False
 moving_up = False
 clock = pygame.time.Clock()
 ballDestroyed = False
+
+heart1 = pygame.image.load('images/heart.webp')
+heart2 = pygame.image.load('images/heart.webp')
+heart3 = pygame.image.load('images/heart.webp')
+
+lives = 3
+
+
 
 player_rect = pygame.Rect(player_pos[0], player_pos[1], player.get_width(), player.get_height())
 
@@ -42,7 +52,7 @@ class Ball:
         def create_timer(self, ball_timer_index):
 
             self.TIMEREVENT = pygame.USEREVENT + ball_timer_index
-            pygame.time.set_timer(self.TIMEREVENT, 6000)
+            pygame.time.set_timer(self.TIMEREVENT, 9000)
 
 
             
@@ -54,8 +64,8 @@ balls = []
 
 def create_random_ball():
     global ball_timer_index
-    x = random.randint(0, 1200)
-    y = random.randint(0, 800)
+    x = random.randint(75, 1135)
+    y = random.randint(0, 650)
     radius = 25
     color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
     ball = Ball(x, y, radius, color)
@@ -71,6 +81,9 @@ running = True
 while running:
     screen.fill((0, 0, 0))
     screen.blit(player, player_pos)
+    pygame.draw.line(screen, (255, 255, 255), (0, 700), (1200, 700))
+    lives_text = font.render(f"Lives: ", True, (255, 255, 255), 130)
+    screen.blit(lives_text, (750, 740))
 
     if len(balls) != 0:
         for ball in balls:
@@ -80,7 +93,7 @@ while running:
         player_pos[0] -= 10
     if moving_right and player_pos[0] < screen.get_width() - player.get_width():  
         player_pos[0] += 10
-    if moving_down and player_pos[1] < screen.get_height() - player.get_height():  
+    if moving_down and player_pos[1] < 700 - player.get_height():  
         player_pos[1] += 10
     if moving_up and player_pos[1] > 0:  
         player_pos[1] -= 10
@@ -118,10 +131,16 @@ while running:
         for ball in balls:
             if event.type == ball.TIMEREVENT:
                 balls.remove(ball)
+                lives -= 1
+                print(f"Lives: {lives}")
 
             if player_rect.colliderect(ball.createRectForBall()):
                 print("Collision detected")
                 balls.remove(ball)
+
+    if lives == 0:
+        print("Game Over")
+        running = False
 
         
 
