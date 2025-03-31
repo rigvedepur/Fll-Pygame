@@ -1,8 +1,9 @@
 import pygame
 import random
 import time
-
+ 
 pygame.init()
+
 
 scale = 2.5
 
@@ -75,13 +76,13 @@ while running:
         for ball in balls:
             ball.draw(screen)
 
-    if moving_left == True:
+    if moving_left and player_pos[0] > 0:
         player_pos[0] -= 10
-    if moving_right == True:
+    if moving_right and player_pos[0] < screen.get_width() - player.get_width():  
         player_pos[0] += 10
-    if moving_down == True:
+    if moving_down and player_pos[1] < screen.get_height() - player.get_height():  
         player_pos[1] += 10
-    if moving_up == True:
+    if moving_up and player_pos[1] > 0:  
         player_pos[1] -= 10
 
     player_rect.x = player_pos[0]
