@@ -1,6 +1,5 @@
 import pygame
 import random
-import time
  
 pygame.init()
 pygame.font.init()
@@ -75,7 +74,7 @@ def create_random_ball():
     x = random.randint(75, 1135)
     y = random.randint(0, 650)
     radius = 25
-    color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+    color = (0, 255, 0)
     ball = Ball(x, y, radius, color)
     ball.create_timer(ball_timer_index)
     ball_timer_index += 1
