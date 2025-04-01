@@ -8,6 +8,7 @@ pygame.font.init()
 font = pygame.font.Font("pixel.ttf", 45)
 
 scale = 2.5
+heart_scale = 6.7
 
 screen = pygame.display.set_mode((1200, 800))
 player = pygame.image.load('images/example_kurma_robot.jpg')
@@ -24,6 +25,12 @@ ballDestroyed = False
 heart1 = pygame.image.load('images/heart.webp')
 heart2 = pygame.image.load('images/heart.webp')
 heart3 = pygame.image.load('images/heart.webp')
+
+heart1 = pygame.transform.scale(heart1, (612/heart_scale, 438/heart_scale))
+heart2 = pygame.transform.scale(heart2, (612/heart_scale, 438/heart_scale))
+heart3 = pygame.transform.scale(heart3, (612/heart_scale, 438/heart_scale))
+
+hearts = [heart3, heart2, heart1]
 
 lives = 3
 
@@ -85,6 +92,10 @@ while running:
     lives_text = font.render(f"Lives: ", True, (255, 255, 255), 130)
     screen.blit(lives_text, (750, 740))
 
+    if len(hearts) > 0:
+        for i, heart in enumerate(hearts):
+            screen.blit(heart, (1100 - i * 100, 730))
+
     if len(balls) != 0:
         for ball in balls:
             ball.draw(screen)
@@ -133,6 +144,7 @@ while running:
                 balls.remove(ball)
                 lives -= 1
                 print(f"Lives: {lives}")
+                hearts.pop()
 
             if player_rect.colliderect(ball.createRectForBall()):
                 print("Collision detected")
