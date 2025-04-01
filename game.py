@@ -1,5 +1,6 @@
 import pygame
 import random
+import time
  
 pygame.init()
 pygame.font.init()
@@ -46,6 +47,7 @@ class Ball:
             self.y = y
             self.radius = radius
             self.color = color
+            self.creation_time = time.time()
 
 
         def draw(self, screen):
@@ -103,6 +105,13 @@ while running:
         for ball in balls:
             ball.draw(screen)
 
+    current_time = time.time()
+    for ball in balls:
+        # Check if the ball should turn red (2 seconds before disappearing)
+        if current_time - ball.creation_time >= 7:  # 9 seconds - 2 seconds = 7 seconds
+            ball.color = (255, 0, 0)  # Change color to red
+        ball.draw(screen)
+
     if moving_left and player_pos[0] > 0:
         player_pos[0] -= 10
     if moving_right and player_pos[0] < screen.get_width() - player.get_width():  
@@ -141,6 +150,7 @@ while running:
         if event.type == TIMEREVENT:
             create_random_ball()
             print(f"Number of balls: {len(balls)}")
+
 
         for ball in balls:
             if event.type == ball.TIMEREVENT:
