@@ -21,6 +21,7 @@ moving_down = False
 moving_up = False
 clock = pygame.time.Clock()
 ballDestroyed = False
+player_score = 0
 
 heart1 = pygame.image.load('images/heart.webp')
 heart2 = pygame.image.load('images/heart.webp')
@@ -90,7 +91,10 @@ while running:
     screen.blit(player, player_pos)
     pygame.draw.line(screen, (255, 255, 255), (0, 700), (1200, 700))
     lives_text = font.render(f"Lives: ", True, (255, 255, 255), 130)
+    score_text = font.render(f"Score: {player_score}", True, (255, 255, 255), 130)
+    screen.blit(score_text, (50, 740))
     screen.blit(lives_text, (750, 740))
+
 
     if len(hearts) > 0:
         for i, heart in enumerate(hearts):
@@ -149,6 +153,7 @@ while running:
             if player_rect.colliderect(ball.createRectForBall()):
                 print("Collision detected")
                 balls.remove(ball)
+                player_score += 1
 
     if lives == 0:
         print("Game Over")
