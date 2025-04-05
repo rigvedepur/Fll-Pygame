@@ -22,6 +22,8 @@ moving_up = False
 clock = pygame.time.Clock()
 ballDestroyed = False
 player_score = 0
+alive = True
+RESET_POSITION = [0, 300]
 
 heart1 = pygame.image.load('images/heart.webp')
 heart2 = pygame.image.load('images/heart.webp')
@@ -84,17 +86,22 @@ def create_random_ball():
     return ball
 
 
+
+
 ball = create_random_ball()
 
 running = True
 while running:
     screen.fill((0, 0, 0))
-    screen.blit(player, player_pos)
+    if alive:
+        screen.blit(player, player_pos)
     pygame.draw.line(screen, (255, 255, 255), (0, 700), (1200, 700))
     lives_text = font.render(f"Lives: ", True, (255, 255, 255), 130)
     score_text = font.render(f"Score: {player_score}", True, (255, 255, 255), 130)
-    screen.blit(score_text, (50, 740))
-    screen.blit(lives_text, (750, 740))
+    game_over_text = font.render("Game Over", True, (255, 255, 255), 130)
+    if alive:
+        screen.blit(score_text, (50, 740))
+        screen.blit(lives_text, (750, 740))
 
 
     if len(hearts) > 0:
@@ -107,12 +114,11 @@ while running:
 
     current_time = time.time()
     for ball in balls:
-        # Check if the ball should turn red (2 seconds before disappearing)
-        if current_time - ball.creation_time >= 7:  # 9 seconds - 2 seconds = 7 seconds
-            ball.color = (255, 0, 0)  # Change color to red
+        if current_time - ball.creation_time >= 7:
+            ball.color = (255, 0, 0) 
         ball.draw(screen)
 
-    if moving_left and player_pos[0] > 0:
+    if moving_left and player_pos[0] > 0 and alive:
         player_pos[0] -= 10
     if moving_right and player_pos[0] < screen.get_width() - player.get_width():  
         player_pos[0] += 10
@@ -137,6 +143,7 @@ while running:
                 moving_up = True
             if event.key == pygame.K_DOWN: 
                 moving_down = True
+            
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT:
                 moving_left = False
@@ -166,7 +173,13 @@ while running:
 
     if lives == 0:
         print("Game Over")
-        running = False
+        alive = False
+        balls.clear()
+        score_text = font.render("blah", 0, (255, 255, 255))
+        pygame.draw.line(screen, (0, 0, 0), (0, 700), (1200, 700))
+        screen.blit(game_over_text, (450, 300))
+
+        
 
         
 
