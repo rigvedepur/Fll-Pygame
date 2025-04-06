@@ -25,6 +25,10 @@ player_score = 0
 alive = True
 RESET_POSITION = [0, 300]
 
+def scoretoString(score):
+    score = str(score)
+    return score
+
 heart1 = pygame.image.load('images/heart.webp')
 heart2 = pygame.image.load('images/heart.webp')
 heart3 = pygame.image.load('images/heart.webp')
@@ -99,6 +103,7 @@ while running:
     lives_text = font.render(f"Lives: ", True, (255, 255, 255), 130)
     score_text = font.render(f"Score: {player_score}", True, (255, 255, 255), 130)
     game_over_text = font.render("Game Over", True, (255, 255, 255), 130)
+
     if alive:
         screen.blit(score_text, (50, 740))
         screen.blit(lives_text, (750, 740))
@@ -120,11 +125,11 @@ while running:
 
     if moving_left and player_pos[0] > 0 and alive:
         player_pos[0] -= 10
-    if moving_right and player_pos[0] < screen.get_width() - player.get_width():  
+    if moving_right and player_pos[0] < screen.get_width() - player.get_width() and alive:  
         player_pos[0] += 10
-    if moving_down and player_pos[1] < 700 - player.get_height():  
+    if moving_down and player_pos[1] < 700 - player.get_height() and alive:  
         player_pos[1] += 10
-    if moving_up and player_pos[1] > 0:  
+    if moving_up and player_pos[1] > 0 and alive:  
         player_pos[1] -= 10
 
     player_rect.x = player_pos[0]
@@ -166,7 +171,7 @@ while running:
                 print(f"Lives: {lives}")
                 hearts.pop()
 
-            if player_rect.colliderect(ball.createRectForBall()):
+            if player_rect.colliderect(ball.createRectForBall()) and alive:
                 print("Collision detected")
                 balls.remove(ball)
                 player_score += 1
@@ -175,9 +180,14 @@ while running:
         print("Game Over")
         alive = False
         balls.clear()
-        score_text = font.render("blah", 0, (255, 255, 255))
+        final_score = player_score
+        final_score_text = font.render(f"FINAL SCORE: {final_score}", True, (255, 255, 255))
+
+        score_text = font.render("0", 0, (255, 255, 255))
         pygame.draw.line(screen, (0, 0, 0), (0, 700), (1200, 700))
         screen.blit(game_over_text, (450, 300))
+        screen.blit(final_score_text, (430, 350))
+
 
         
 
